@@ -29,7 +29,6 @@ public class TicTacToe extends JFrame {
     public static final int CELL_PADDING = CELL_SIZE / 6;
     public static final int SYMBOL_SIZE = CELL_SIZE - CELL_PADDING * 2; // width/height
     public static final int SYMBOL_STROKE_WIDTH = 8; // pen's stroke width
-
     // Use an enumeration (inner class) to represent the various states of the game
     public enum GameState {
         PLAYING, DRAW, CROSS_WON, NOUGHT_WON
@@ -46,6 +45,7 @@ public class TicTacToe extends JFrame {
     private DrawCanvas canvas; // Drawing canvas (JPanel) for the game board
     private JLabel statusBar;  // Status Bar
     Cliente client;
+    char mySymbol='*';
     /**
      * Constructor to setup the game and the GUI components
      */
@@ -119,9 +119,9 @@ public class TicTacToe extends JFrame {
         }
         currentState = GameState.PLAYING; // ready to play
         currentPlayer = Seed.CROSS;       // cross plays first
+        mySymbol = ( mySymbol == 'X')? 'O' : 'X';
     }
-    public void processClick(int mouseX, int mouseY){
-        client.print("entrou no processClick");
+    public void processClick(int clienteOrigem,int mouseX, int mouseY){
         int rowSelected = mouseY / CELL_SIZE;
         int colSelected = mouseX / CELL_SIZE;
         if (currentState == GameState.PLAYING) {
@@ -129,22 +129,24 @@ public class TicTacToe extends JFrame {
                     && colSelected < COLS && board[rowSelected][colSelected] == Seed.EMPTY) {
                 board[rowSelected][colSelected] = currentPlayer; // Make a move
                 updateGame(currentPlayer, rowSelected, colSelected); // update state
-                // Switch player
                 currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
-                HashMap<Integer, String> data=new HashMap();
-                int otherPlayer = (client.clientId ==1) ? 0 : 1;
-                data.put(0, Integer.toString(otherPlayer));
-                try{
-                    client.sendData(data);
+                if(clienteOrigem==client.clientId)
+                {
+                    // Switch player                    
+                    HashMap<Integer, String> data=new HashMap();
+                    int otherPlayer = (client.clientId ==1) ? 0 : 1;
+                    data.put(0, Integer.toString(otherPlayer));
+                    try{
+                        client.sendData(data);
+                    }
+                    catch(Exception ex){
+                        client.print("Erro ao enviar o sinal de mudanca de jogador");
+                    }   
                 }
-                catch(Exception ex){
-                    client.print("Erro ao enviar o sinal de mudanca de jogador");
-                }               
             }
         } else {       // game over            
             initGame(); // restart the game
         }
-        client.print("entrou no repaint");
         repaint();
     }
     /**
@@ -241,10 +243,12 @@ public class TicTacToe extends JFrame {
             // Print status-bar message
             if (currentState == GameState.PLAYING) {
                 statusBar.setForeground(Color.BLACK);
+                //char c = (symbolOfClient ==Seed.CROSS) ? 'X' : 'O';
+                
                 if (currentPlayer == Seed.CROSS) {
-                    statusBar.setText("X's Turn");
+                    statusBar.setText(mySymbol+"X's Turn");                    
                 } else {
-                    statusBar.setText("O's Turn");
+                    statusBar.setText(mySymbol+"O's Turn");
                 }
             } else {
                 switchFirstPlayer();
@@ -265,15 +269,13 @@ public class TicTacToe extends JFrame {
     }
     public void switchFirstPlayer(){
         //switch first player
-        currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
         HashMap<Integer, String> data=new HashMap();
-        int otherPlayer = (client.clientId ==1) ? 0 : 1;
-        data.put(0, Integer.toString(otherPlayer));
+        data.put(0, "switch first player");
         try{
             client.sendData(data);
         }
         catch(Exception ex){
-            client.print("Erro ao enviar o sinal de mudanca de jogador");
+            client.print("Erro ao enviar o sinal de mudanca de primeiro jogador");
         }     
     }
     /**

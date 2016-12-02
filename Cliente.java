@@ -45,7 +45,6 @@ public class Cliente {
         {
             public void run() {
                 try {
-                    Thread.sleep(100);
                     readDataInvokeLater();
                 } catch (Exception ex) {                        
                     print("Failure to trigger client 0 listener");
@@ -62,6 +61,8 @@ public class Cliente {
             case -1: //mensagem de conexao                  
                 String numberString=input.readUTF();
                 clientId=Integer.parseInt(numberString);
+                ticTacToe.mySymbol= (clientId==0) ? 'O' : 'X';
+                System.out.println(ticTacToe.mySymbol);
                 print(messageByte+": "+numberString);                
                 break;
             case 1: //resposta da pergunta se é o jogador da vez
@@ -86,7 +87,7 @@ public class Cliente {
                         @Override
                         public void run() {
                             try{
-                                ticTacToe.processClick(mouseX, mouseY);
+                                ticTacToe.processClick(clientId,mouseX, mouseY);
                             }
                             catch(Exception e){
                                 System.out.println(e.toString());

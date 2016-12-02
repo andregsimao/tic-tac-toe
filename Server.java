@@ -26,10 +26,12 @@ public class Server
         {
             public void run() {
                 try {
-                    Thread.sleep(500);
-                    //TicTacToe.main(null);
-                    //TicTacToe.main(null);
-                } catch (Exception ex) {
+                    Thread.sleep(50);
+                    TicTacToe.main(null);
+                    TicTacToe.main(null);
+                } 
+                catch (Exception ex) {
+                    print("It wasn't possible open two windows of tic-tac-toe");
                 }
             }
         }.start();
@@ -96,7 +98,7 @@ public class Server
         {
             public void run() {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                     readDataInvokeLater(indexClient);
                 } catch (Exception ex) {                        
                     print("Failure to trigger readData to client "+ indexClient);
@@ -119,8 +121,11 @@ public class Server
             case 0: //trocou de jogador
                 String otherPlayerSt=input[indexClient].readUTF();
                 //print("Trocou para jogador "+otherPlayerSt);
+                if(currentPlayer==1)
+                    currentPlayer= 0 ;
+                else 
+                    currentPlayer=1;                
                 print(messageByte+": "+otherPlayerSt);
-                currentPlayer=Integer.parseInt(otherPlayerSt);
                 readData(indexClient);
                 break;
             case 2: //pergunta se é o jogador da vez           
