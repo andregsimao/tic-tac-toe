@@ -20,7 +20,10 @@ public class Cliente {
     private DataInputStream input; // input stream from client
     Socket client;
     int clientId=-1;
-    
+    TicTacToe ticTacToe;
+    public Cliente(TicTacToe ticTacToe){
+        this.ticTacToe=ticTacToe;
+    }
     public void run() throws Exception{        
         client=new Socket("localhost",12346);
         getStreams();        
@@ -47,7 +50,20 @@ public class Cliente {
                 print("Client set its id to "+numberString);
                 clientId=Integer.parseInt(numberString);
                 break;
-            case 1: //
+            case 1: //resposta da pergunta se é o jogador da vez
+                String answerYesOrNo=input.readUTF();
+                
+                messageByte = input.readByte(); 
+                int clientId=Integer.parseInt(input.readUTF());
+                
+                messageByte = input.readByte();
+                int mouseX=Integer.parseInt(input.readUTF());
+                
+                messageByte = input.readByte();
+                int mouseY=Integer.parseInt(input.readUTF());
+                if(answerYesOrNo.equals("yes"))
+                    ticTacToe.processClick(mouseX, mouseY);               
+                readData();
                 break;
         }
     }
@@ -58,6 +74,7 @@ public class Cliente {
         for (Map.Entry<Integer,String> entry : data.entrySet()) {
             int key = entry.getKey();
             String value = entry.getValue();
+            print(key+": "+value);
             output.writeByte(key);
             output.writeUTF(value);
         }

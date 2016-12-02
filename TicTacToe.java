@@ -8,6 +8,8 @@ package tictactoe;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
@@ -48,7 +50,7 @@ public class TicTacToe extends JFrame {
      * Constructor to setup the game and the GUI components
      */
     public TicTacToe() throws Exception {
-        client=new Cliente();
+        client=new Cliente(this);
         client.run();
         System.out.println("passou do run");
         canvas = new DrawCanvas();  // Construct a drawing canvas (a JPanel)
@@ -59,8 +61,16 @@ public class TicTacToe extends JFrame {
             public void mouseClicked(MouseEvent e) {  // mouse-clicked handler                
                 int mouseX = e.getX();
                 int mouseY = e.getY();
-                // Get the row and column clicked
-                processClick(mouseX,mouseY);
+                HashMap<Integer, String> data=new HashMap();
+                data.put(2, Integer.toString(client.clientId));
+                data.put(3, Integer.toString(mouseX));
+                data.put(4, Integer.toString(mouseY));                
+                try{
+                    client.sendData(data);
+                }
+                catch(Exception ex){
+                    client.print("Erro no jogador "+client.clientId+" ao perguntar se é o jogador da vez");
+                }       
             }
         });
 
@@ -80,7 +90,7 @@ public class TicTacToe extends JFrame {
                 {
                     e.getWindow().dispose();
                     HashMap<Integer, String> data=new HashMap();
-                    data.put(0, "Client "+client.clientId+" finished connection");
+                    data.put(-1, "Client "+client.clientId+" finished connection");
                     try{
                         client.sendData(data);
                     }
@@ -121,6 +131,17 @@ public class TicTacToe extends JFrame {
                 updateGame(currentPlayer, rowSelected, colSelected); // update state
                 // Switch player
                 currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
+                HashMap<Integer, String> data=new HashMap();
+                int otherPlayer = (client.clientId ==1) ? 0 : 1;
+                data.put(0, Integer.toString(otherPlayer));
+                try{
+                    client.sendData(data);
+                }
+                catch(Exception ex){
+                    client.print("Erro ao enviar o sinal de mudanca de jogador");
+                }
+                    
+                
             }
         } else {       // game over
             initGame(); // restart the game
