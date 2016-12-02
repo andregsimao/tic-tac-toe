@@ -73,8 +73,8 @@ public class TicTacToe extends JFrame {
         cp.setLayout(new BorderLayout());
         cp.add(canvas, BorderLayout.CENTER);
         cp.add(statusBar, BorderLayout.PAGE_END); // same as SOUTH
-        this.addWindowListener(new WindowAdapter()
-            {
+        this.addWindowListener(
+            new WindowAdapter(){
                 @Override
                 public void windowClosing(WindowEvent e)
                 {

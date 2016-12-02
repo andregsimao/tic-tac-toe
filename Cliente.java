@@ -26,21 +26,6 @@ public class Cliente {
         getStreams();        
         readData();
         print("saiu");
-        //HashMap<Integer, String> data=new HashMap();
-        //data.put(1, "ss");
-        //sendData(data);
-        new Thread()
-        {
-            public void run() {
-                try {
-                    //int finish=readData(0);
-                    //if(finish==1)
-                    //    break;
-                } catch (Exception ex) {
-                    print("Failure to trigger client 0 listener");
-                }
-            }
-        }.start();   
     }
     
     private void getStreams() throws IOException

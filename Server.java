@@ -34,32 +34,22 @@ public class Server
         new Thread()
         {
             public void run() {
-                while(flagFinish!=2)
-                {
-                    try {
-                        Thread.sleep(1000);
-                        int finish=readData(0);
-                        if(finish==1)
-                            break;
-                    } catch (Exception ex) {
-                        print("Failure to trigger client 0 listener");
-                    }
+                try {
+                    Thread.sleep(1000);
+                    readData(0);
+                } catch (Exception ex) {
+                    print("Failure to trigger client 0 listener");
                 }
             }
         }.start();
         new Thread()
         {
             public void run() {
-                while(flagFinish!=2)
-                {
-                    try {
-                        Thread.sleep(100);
-                        int finish=readData(1);
-                        if(finish==1)
-                            break;
-                    } catch (Exception ex) {                        
-                        print("Failure to trigger client 0 listener");
-                    }
+                try {
+                    Thread.sleep(100);
+                    readData(1);
+                } catch (Exception ex) {                        
+                    print("Failure to trigger client 0 listener");
                 }
             }
         }.start();
@@ -107,7 +97,7 @@ public class Server
     void print(String message){
         System.out.println("<<SERVER>> "+message);
     }
-    public int readData(int indexClient) throws Exception{
+    public void readData(int indexClient) throws Exception{
         print( "Reading data:" );
         Byte messageByte; 
         messageByte = input[indexClient].readByte();
@@ -115,10 +105,8 @@ public class Server
             case 0: //mensagem de desconexao                
                 print(input[indexClient].readUTF());
                 closeConnection(indexClient);
-                return 1;
             case 1: //
                 break;
         }
-        return 0;
     }
 }
