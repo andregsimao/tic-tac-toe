@@ -41,7 +41,7 @@ public class TicTacToe extends JFrame {
         EMPTY, CROSS, NOUGHT
     }
     private Seed currentPlayer;  // the current player
-
+    private boolean apertou=false;
     private Seed[][] board; // Game board of ROWS-by-COLS cells
     private DrawCanvas canvas; // Drawing canvas (JPanel) for the game board
     private JLabel statusBar;  // Status Bar
@@ -52,7 +52,6 @@ public class TicTacToe extends JFrame {
     public TicTacToe() throws Exception {
         client=new Cliente(this);
         client.run();
-        System.out.println("passou do run");
         canvas = new DrawCanvas();  // Construct a drawing canvas (a JPanel)
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));        
         // The canvas (JPanel) fires a MouseEvent upon mouse-click
@@ -70,7 +69,7 @@ public class TicTacToe extends JFrame {
                 }
                 catch(Exception ex){
                     client.print("Erro no jogador "+client.clientId+" ao perguntar se é o jogador da vez");
-                }       
+                }     
             }
         });
 
@@ -107,7 +106,7 @@ public class TicTacToe extends JFrame {
         setVisible(true);  // show this JFrame
 
         board = new Seed[ROWS][COLS]; // allocate array
-        initGame(); // initialize the game board contents and game variables
+        initGame(); 
     }    
     /**
      * Initialize the game-board contents and the status
@@ -122,6 +121,7 @@ public class TicTacToe extends JFrame {
         currentPlayer = Seed.CROSS;       // cross plays first
     }
     public void processClick(int mouseX, int mouseY){
+        client.print("entrou no processClick");
         int rowSelected = mouseY / CELL_SIZE;
         int colSelected = mouseX / CELL_SIZE;
         if (currentState == GameState.PLAYING) {
@@ -139,14 +139,13 @@ public class TicTacToe extends JFrame {
                 }
                 catch(Exception ex){
                     client.print("Erro ao enviar o sinal de mudanca de jogador");
-                }
-                    
-                
+                }               
             }
         } else {       // game over
             initGame(); // restart the game
         }
-        repaint();  
+        client.print("entrou no repaint");
+        repaint();
     }
     /**
      * Update the currentState after the player with "theSeed" has placed on

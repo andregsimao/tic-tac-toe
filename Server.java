@@ -22,37 +22,28 @@ public class Server
         output=new DataOutputStream[2];
         currentPlayer=0;
         server = new ServerSocket( 12346, 72 );
+        new Thread()
+        {
+            public void run() {
+                try {
+                    Thread.sleep(500);
+                    //TicTacToe.main(null);
+                    //TicTacToe.main(null);
+                } catch (Exception ex) {
+                }
+            }
+        }.start();
         for ( int indexClient=0;indexClient<2;indexClient++) 
         {                   
             waitForConnection(indexClient);
             getStreams(indexClient); //set output and input
             HashMap<Integer, String> data = new HashMap();
-            data.put(0, Integer.toString(indexClient));
+            data.put(-1, Integer.toString(indexClient));
             sendData(indexClient,data);
             print("Client "+indexClient+" connected");
         }     
-        new Thread()
-        {
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                    readData(0);
-                } catch (Exception ex) {
-                    print("Failure to trigger client 0 listener");
-                }
-            }
-        }.start();
-        new Thread()
-        {
-            public void run() {
-                try {
-                    Thread.sleep(100);
-                    readData(1);
-                } catch (Exception ex) {                        
-                    print("Failure to trigger client 0 listener");
-                }
-            }
-        }.start();
+        readData(0);
+        readData(1);
         while(flagFinish!=2){
             Thread.sleep(10);
         }
@@ -67,6 +58,7 @@ public class Server
     }
     void sendData(int indexClient,  HashMap<Integer, String> data ) throws Exception
     {
+        print("-------------------------");
         print( "Sending data" );
         for (Map.Entry<Integer,String> entry : data.entrySet()) {
             int key = entry.getKey();
@@ -77,6 +69,7 @@ public class Server
         }
         output[indexClient].flush(); // Send off the data
         print( "Data sended" );
+        print("-------------------------");
     }
     private void waitForConnection(int indexClient) throws Exception 
     {
@@ -98,34 +91,50 @@ public class Server
     void print(String message){
         System.out.println("<<SERVER>> "+message);
     }
-    public void readData(int indexClient) throws Exception{
+    public void readData(int indexClient) throws Exception{  
+        new Thread()
+        {
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                    readDataInvokeLater(indexClient);
+                } catch (Exception ex) {                        
+                    print("Failure to trigger readData to client "+ indexClient);
+                }
+            }
+        }.start();        
+    }
+    public void readDataInvokeLater(int indexClient) throws Exception{        
+        print("--------------------------------------------------");
         print( "Reading data:" );
         Byte messageByte; 
         messageByte = input[indexClient].readByte();
         switch(messageByte){
             case -1: //mensagem de desconexao  
                 String aux=input[indexClient].readUTF();
-                print(aux);
-                print("-------------------------");
+                //print(aux);
                 print(messageByte+": "+aux);
-                print("-------------------------");
                 closeConnection(indexClient);
-                break;
+                return;
             case 0: //trocou de jogador
                 String otherPlayerSt=input[indexClient].readUTF();
-                print("Trocou para jogador "+otherPlayerSt);
-                print("-------------------------");
+                //print("Trocou para jogador "+otherPlayerSt);
                 print(messageByte+": "+otherPlayerSt);
-                print("-------------------------");
                 currentPlayer=Integer.parseInt(otherPlayerSt);
                 readData(indexClient);
                 break;
-            case 2: //pergunta se é o jogador da vez
+            case 2: //pergunta se é o jogador da vez           
                 int clientId=Integer.parseInt(input[indexClient].readUTF());
+                print(messageByte+": "+clientId);
+                
                 messageByte = input[indexClient].readByte();
                 int mouseX = Integer.parseInt(input[indexClient].readUTF());
+                print(messageByte+": "+mouseX);
+                
                 messageByte = input[indexClient].readByte();
                 int mouseY =Integer.parseInt(input[indexClient].readUTF());
+                print(messageByte+": "+mouseY);
+                
                 HashMap<Integer, String> data = new HashMap();
                 if(clientId==currentPlayer)  
                     data.put(1, "yes");
@@ -137,10 +146,11 @@ public class Server
                 sendData(0,data);     
                 sendData(1,data);
                 readData(indexClient);
-                break;
-                
-                
+                break;            
+            default:
+                print(" "+messageByte);
         }
-        print( "Reading data:" );
+        print( "Data readed" );        
+        print("--------------------------------------------------");
     }
 }

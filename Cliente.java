@@ -15,6 +15,7 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.SwingUtilities;
 public class Cliente {
     private DataOutputStream output; // output stream to client
     private DataInputStream input; // input stream from client
@@ -28,7 +29,6 @@ public class Cliente {
         client=new Socket("localhost",12346);
         getStreams();        
         readData();
-        print("saiu");
     }
     
     private void getStreams() throws IOException
@@ -40,36 +40,69 @@ public class Cliente {
         // set up input stream for objects
         input = new DataInputStream(client.getInputStream());        
     } 
-    public void readData() throws Exception{
+    public void readData() throws Exception{  
+        new Thread()
+        {
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                    readDataInvokeLater();
+                } catch (Exception ex) {                        
+                    print("Failure to trigger client 0 listener");
+                }
+            }
+        }.start();        
+    }
+    void readDataInvokeLater() throws Exception{
+        print("-------------------------");
         print( "Reading data" );
         Byte messageByte; 
         messageByte = input.readByte();
         switch(messageByte){
-            case 0: //mensagem de conexao                
+            case -1: //mensagem de conexao                  
                 String numberString=input.readUTF();
-                print("Client set its id to "+numberString);
                 clientId=Integer.parseInt(numberString);
+                print(messageByte+": "+numberString);                
                 break;
             case 1: //resposta da pergunta se é o jogador da vez
                 String answerYesOrNo=input.readUTF();
+                print(messageByte+": "+answerYesOrNo);                
                 
                 messageByte = input.readByte(); 
                 int clientId=Integer.parseInt(input.readUTF());
+                print(messageByte+": "+clientId);
                 
                 messageByte = input.readByte();
                 int mouseX=Integer.parseInt(input.readUTF());
+                print(messageByte+": "+mouseX);
                 
                 messageByte = input.readByte();
                 int mouseY=Integer.parseInt(input.readUTF());
+                print(messageByte+": "+mouseY);
+                
                 if(answerYesOrNo.equals("yes"))
-                    ticTacToe.processClick(mouseX, mouseY);               
-                readData();
+                {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                ticTacToe.processClick(mouseX, mouseY);
+                            }
+                            catch(Exception e){
+                                System.out.println(e.toString());
+                            }
+                        }
+                    });
+                }               
                 break;
         }
+        readData();
+        print( "Data readed" );        
+        print("-------------------------");
     }
-    
     void sendData( HashMap<Integer, String> data ) throws Exception
     {
+        print("-------------------------");
         print( "Sending data" );
         for (Map.Entry<Integer,String> entry : data.entrySet()) {
             int key = entry.getKey();
@@ -80,10 +113,11 @@ public class Cliente {
         }
         output.flush(); // Send off the data
         print( "Data sended" );
+        print("-------------------------");
     }
     
     void print(Object message){
-        System.out.println("<<CLIENTE>> "+message);
+        System.out.println("<<CLIENTE "+clientId+">> "+message);
     }
     void closeConnection() 
     {
