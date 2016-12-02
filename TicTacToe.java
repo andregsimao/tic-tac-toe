@@ -141,7 +141,7 @@ public class TicTacToe extends JFrame {
                     client.print("Erro ao enviar o sinal de mudanca de jogador");
                 }               
             }
-        } else {       // game over
+        } else {       // game over            
             initGame(); // restart the game
         }
         client.print("entrou no repaint");
@@ -246,17 +246,35 @@ public class TicTacToe extends JFrame {
                 } else {
                     statusBar.setText("O's Turn");
                 }
-            } else if (currentState == GameState.DRAW) {
-                statusBar.setForeground(Color.RED);
-                statusBar.setText("It's a Draw! Click to play again.");
-            } else if (currentState == GameState.CROSS_WON) {
-                statusBar.setForeground(Color.RED);
-                statusBar.setText("'X' Won! Click to play again.");
-            } else if (currentState == GameState.NOUGHT_WON) {
-                statusBar.setForeground(Color.RED);
-                statusBar.setText("'O' Won! Click to play again.");
+            } else {
+                switchFirstPlayer();
+                  
+                if (currentState == GameState.DRAW) {
+                    statusBar.setForeground(Color.RED);
+                    statusBar.setText("It's a Draw! Click to play again.");
+                } else if (currentState == GameState.CROSS_WON) {
+                    statusBar.setForeground(Color.RED);
+                    statusBar.setText("'X' Won! Click to play again.");
+                } else if (currentState == GameState.NOUGHT_WON) {
+                    statusBar.setForeground(Color.RED);
+                    statusBar.setText("'O' Won! Click to play again.");
+                }
             }
+                
         }
+    }
+    public void switchFirstPlayer(){
+        //switch first player
+        currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
+        HashMap<Integer, String> data=new HashMap();
+        int otherPlayer = (client.clientId ==1) ? 0 : 1;
+        data.put(0, Integer.toString(otherPlayer));
+        try{
+            client.sendData(data);
+        }
+        catch(Exception ex){
+            client.print("Erro ao enviar o sinal de mudanca de jogador");
+        }     
     }
     /**
      * The entry main() method
