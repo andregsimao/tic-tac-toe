@@ -239,29 +239,40 @@ public class TicTacToe extends JFrame {
                     }
                 }
             }
-
             // Print status-bar message
             if (currentState == GameState.PLAYING) {
-                statusBar.setForeground(Color.BLACK);
-                //char c = (symbolOfClient ==Seed.CROSS) ? 'X' : 'O';
-                
+                statusBar.setForeground(Color.BLACK);                
                 if (currentPlayer == Seed.CROSS) {
-                    statusBar.setText(mySymbol+"X's Turn");                    
+                    if(mySymbol=='X')
+                        statusBar.setText("Your turn         (X's Turn)");                    
+                    else
+                        statusBar.setText("Opponent's turn   (X's Turn)");                    
                 } else {
-                    statusBar.setText(mySymbol+"O's Turn");
+                    if(mySymbol=='X')
+                        statusBar.setText("Opponent's turn   (O's Turn)");                    
+                    else
+                        statusBar.setText("Your turn         (O's Turn)");  
                 }
             } else {
-                switchFirstPlayer();
-                  
+                switchFirstPlayer();                  
                 if (currentState == GameState.DRAW) {
                     statusBar.setForeground(Color.RED);
-                    statusBar.setText("It's a Draw! Click to play again.");
+                    if(mySymbol=='X')
+                        statusBar.setText("It's a Draw! Wait to play again.");
+                    else
+                        statusBar.setText("It's a Draw! Click to play again.");                  
                 } else if (currentState == GameState.CROSS_WON) {
                     statusBar.setForeground(Color.RED);
-                    statusBar.setText("'X' Won! Click to play again.");
+                    if(mySymbol=='X')
+                        statusBar.setText("You Won! Wait to play again.");
+                    else
+                        statusBar.setText("You lose! Click to play again.");
                 } else if (currentState == GameState.NOUGHT_WON) {
                     statusBar.setForeground(Color.RED);
-                    statusBar.setText("'O' Won! Click to play again.");
+                    if(mySymbol=='X')
+                        statusBar.setText("You lose! Wait to play again.");
+                    else
+                        statusBar.setText("You Won! Click to play again.");
                 }
             }
                 

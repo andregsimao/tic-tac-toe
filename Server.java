@@ -27,8 +27,8 @@ public class Server
             public void run() {
                 try {
                     Thread.sleep(50);
-                    TicTacToe.main(null);
-                    TicTacToe.main(null);
+                    //TicTacToe.main(null);
+                    //TicTacToe.main(null);
                 } 
                 catch (Exception ex) {
                     print("It wasn't possible open two windows of tic-tac-toe");
@@ -98,7 +98,6 @@ public class Server
         {
             public void run() {
                 try {
-                    Thread.sleep(10);
                     readDataInvokeLater(indexClient);
                 } catch (Exception ex) {                        
                     print("Failure to trigger readData to client "+ indexClient);

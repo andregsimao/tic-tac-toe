@@ -82,19 +82,7 @@ public class Cliente {
                 print(messageByte+": "+mouseY);
                 
                 if(answerYesOrNo.equals("yes"))
-                {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            try{
-                                ticTacToe.processClick(clientId,mouseX, mouseY);
-                            }
-                            catch(Exception e){
-                                System.out.println(e.toString());
-                            }
-                        }
-                    });
-                }               
+                    ticTacToe.processClick(clientId,mouseX, mouseY);           
                 break;
         }
         readData();
