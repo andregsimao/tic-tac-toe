@@ -62,7 +62,6 @@ public class Cliente {
                 String numberString=input.readUTF();
                 clientId=Integer.parseInt(numberString);
                 ticTacToe.mySymbol= (clientId==0) ? 'O' : 'X';
-                System.out.println(ticTacToe.mySymbol);
                 print(messageByte+": "+numberString);                
                 break;
             case 1: //resposta da pergunta se é o jogador da vez

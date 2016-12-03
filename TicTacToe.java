@@ -46,6 +46,7 @@ public class TicTacToe extends JFrame {
     private JLabel statusBar;  // Status Bar
     Cliente client;
     char mySymbol='*';
+    boolean trocar=false;
     /**
      * Constructor to setup the game and the GUI components
      */
@@ -106,6 +107,7 @@ public class TicTacToe extends JFrame {
         setVisible(true);  // show this JFrame
 
         board = new Seed[ROWS][COLS]; // allocate array
+        Thread.sleep(100);
         initGame(); 
     }    
     /**
@@ -119,7 +121,13 @@ public class TicTacToe extends JFrame {
         }
         currentState = GameState.PLAYING; // ready to play
         currentPlayer = Seed.CROSS;       // cross plays first
-        mySymbol = ( mySymbol == 'X')? 'O' : 'X';
+        mySymbol = ( mySymbol == 'X')? 'O' : 'X';        
+        if(trocar)
+        {
+            trocar=false;
+            mySymbol = ( mySymbol == 'X')? 'O' : 'X';
+        }        
+        //System.out.println("mySymbol em "+client.clientId+": "+mySymbol);
     }
     public void processClick(int clienteOrigem,int mouseX, int mouseY){
         int rowSelected = mouseY / CELL_SIZE;
@@ -155,8 +163,12 @@ public class TicTacToe extends JFrame {
      */
     public void updateGame(Seed theSeed, int rowSelected, int colSelected) {
         if (hasWon(theSeed, rowSelected, colSelected)) {  // check for win
+            switchFirstPlayer();
+            if(theSeed == Seed.NOUGHT)
+                trocar = true;
             currentState = (theSeed == Seed.CROSS) ? GameState.CROSS_WON : GameState.NOUGHT_WON;
         } else if (isDraw()) {  // check for draw
+            switchFirstPlayer();
             currentState = GameState.DRAW;
         }
         // Otherwise, no change to current state (still GameState.PLAYING).
@@ -197,9 +209,6 @@ public class TicTacToe extends JFrame {
                 && board[2][0] == theSeed);
     }
 
-    /**
-     * Inner class DrawCanvas (extends JPanel) used for custom graphics drawing.
-     */
     class DrawCanvas extends JPanel {
 
         @Override
@@ -253,8 +262,7 @@ public class TicTacToe extends JFrame {
                     else
                         statusBar.setText("Your turn         (O's Turn)");  
                 }
-            } else {
-                switchFirstPlayer();                  
+            } else {                                  
                 if (currentState == GameState.DRAW) {
                     statusBar.setForeground(Color.RED);
                     if(mySymbol=='X')
@@ -270,9 +278,9 @@ public class TicTacToe extends JFrame {
                 } else if (currentState == GameState.NOUGHT_WON) {
                     statusBar.setForeground(Color.RED);
                     if(mySymbol=='X')
-                        statusBar.setText("You lose! Wait to play again.");
+                        statusBar.setText("You lose! Click to play again.");
                     else
-                        statusBar.setText("You Won! Click to play again.");
+                        statusBar.setText("You Won! Wait to play again.");
                 }
             }
                 

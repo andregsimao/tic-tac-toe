@@ -27,8 +27,8 @@ public class Server
             public void run() {
                 try {
                     Thread.sleep(50);
-                    //TicTacToe.main(null);
-                    //TicTacToe.main(null);
+                    TicTacToe.main(null);
+                    TicTacToe.main(null);
                 } 
                 catch (Exception ex) {
                     print("It wasn't possible open two windows of tic-tac-toe");
@@ -147,8 +147,11 @@ public class Server
                 data.put(2, Integer.toString(clientId));
                 data.put(3, Integer.toString(mouseX));
                 data.put(4, Integer.toString(mouseY));                            
-                sendData(0,data);     
-                sendData(1,data);
+                if(clientId==currentPlayer)
+                {
+                    sendData(0,data);
+                    sendData(1,data);
+                }                  
                 readData(indexClient);
                 break;            
             default:
