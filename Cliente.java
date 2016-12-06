@@ -28,7 +28,7 @@ public class Cliente {
     public void run() throws Exception{        
         client=new Socket("localhost",12346);
         getStreams();        
-        readData();
+        readDataThread();
     }
     
     private void getStreams() throws IOException
@@ -40,19 +40,19 @@ public class Cliente {
         // set up input stream for objects
         input = new DataInputStream(client.getInputStream());        
     } 
-    public void readData() throws Exception{  
+    public void readDataThread() throws Exception{  
         new Thread()
         {
             public void run() {
                 try {
-                    readDataInvokeLater();
+                    readData();
                 } catch (Exception ex) {                        
                     print("Failure to trigger client 0 listener");
                 }
             }
         }.start();        
     }
-    void readDataInvokeLater() throws Exception{
+    void readData() throws Exception{
         print("-------------------------");
         print( "Reading data" );
         Byte messageByte; 

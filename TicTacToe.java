@@ -62,7 +62,6 @@ public class TicTacToe extends JFrame {
                 int mouseX = e.getX();
                 int mouseY = e.getY();
                 HashMap<Integer, String> data=new HashMap();
-                data.put(2, Integer.toString(client.clientId));
                 data.put(3, Integer.toString(mouseX));
                 data.put(4, Integer.toString(mouseY));                
                 try{

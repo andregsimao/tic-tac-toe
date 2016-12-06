@@ -22,19 +22,19 @@ public class Server
         output=new DataOutputStream[2];
         currentPlayer=0;
         server = new ServerSocket( 12346, 72 );
-        new Thread()
-        {
-            public void run() {
-                try {
-                    Thread.sleep(50);
-                    TicTacToe.main(null);
-                    TicTacToe.main(null);
-                } 
-                catch (Exception ex) {
-                    print("It wasn't possible open two windows of tic-tac-toe");
-                }
-            }
-        }.start();
+//        new Thread()
+//        {
+//            public void run() {
+//                try {
+//                    Thread.sleep(50);
+//                    TicTacToe.main(null);
+//                    TicTacToe.main(null);
+//                } 
+//                catch (Exception ex) {
+//                    print("It wasn't possible open two windows of tic-tac-toe");
+//                }
+//            }
+//        }.start();
         for ( int indexClient=0;indexClient<2;indexClient++) 
         {                   
             waitForConnection(indexClient);
@@ -44,8 +44,8 @@ public class Server
             sendData(indexClient,data);
             print("Client "+indexClient+" connected");
         }     
-        readData(0);
-        readData(1);
+        readDataThread(0);
+        readDataThread(1);
         while(flagFinish!=2){
             Thread.sleep(10);
         }
@@ -93,19 +93,19 @@ public class Server
     void print(String message){
         System.out.println("<<SERVER>> "+message);
     }
-    public void readData(int indexClient) throws Exception{  
+    public void readDataThread(int indexClient) throws Exception{  
         new Thread()
         {
             public void run() {
                 try {
-                    readDataInvokeLater(indexClient);
+                    readData(indexClient);
                 } catch (Exception ex) {                        
                     print("Failure to trigger readData to client "+ indexClient);
                 }
             }
         }.start();        
     }
-    public void readDataInvokeLater(int indexClient) throws Exception{        
+    public void readData(int indexClient) throws Exception{        
         print("--------------------------------------------------");
         print( "Reading data:" );
         Byte messageByte; 
@@ -125,13 +125,9 @@ public class Server
                 else 
                     currentPlayer=1;                
                 print(messageByte+": "+otherPlayerSt);
-                readData(indexClient);
+                readDataThread(indexClient);
                 break;
-            case 2: //pergunta se é o jogador da vez           
-                int clientId=Integer.parseInt(input[indexClient].readUTF());
-                print(messageByte+": "+clientId);
-                
-                messageByte = input[indexClient].readByte();
+            case 3: //pergunta se é o jogador da vez         
                 int mouseX = Integer.parseInt(input[indexClient].readUTF());
                 print(messageByte+": "+mouseX);
                 
@@ -140,19 +136,19 @@ public class Server
                 print(messageByte+": "+mouseY);
                 
                 HashMap<Integer, String> data = new HashMap();
-                if(clientId==currentPlayer)  
+                if(indexClient==currentPlayer)  
                     data.put(1, "yes");
                 else
                     data.put(1, "no");
-                data.put(2, Integer.toString(clientId));
+                data.put(2, Integer.toString(indexClient));
                 data.put(3, Integer.toString(mouseX));
                 data.put(4, Integer.toString(mouseY));                            
-                if(clientId==currentPlayer)
+                if(indexClient==currentPlayer)
                 {
                     sendData(0,data);
                     sendData(1,data);
                 }                  
-                readData(indexClient);
+                readDataThread(indexClient);
                 break;            
             default:
                 print(" "+messageByte);
