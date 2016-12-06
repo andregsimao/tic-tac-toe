@@ -64,11 +64,7 @@ public class Cliente {
                 ticTacToe.mySymbol= (clientId==0) ? 'O' : 'X';
                 print(messageByte+": "+numberString);                
                 break;
-            case 1: //resposta da pergunta se é o jogador da vez
-                String answerYesOrNo=input.readUTF();
-                print(messageByte+": "+answerYesOrNo);                
-                
-                messageByte = input.readByte(); 
+            case 2: //resposta afirmativa da pergunta se é o jogador da vez 
                 int clientId=Integer.parseInt(input.readUTF());
                 print(messageByte+": "+clientId);
                 
@@ -80,8 +76,7 @@ public class Cliente {
                 int mouseY=Integer.parseInt(input.readUTF());
                 print(messageByte+": "+mouseY);
                 
-                if(answerYesOrNo.equals("yes"))
-                    ticTacToe.processClick(clientId,mouseX, mouseY);           
+                ticTacToe.processClick(clientId,mouseX, mouseY);           
                 break;
         }
         readData();

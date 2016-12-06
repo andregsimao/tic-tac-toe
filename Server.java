@@ -135,11 +135,7 @@ public class Server
                 int mouseY =Integer.parseInt(input[indexClient].readUTF());
                 print(messageByte+": "+mouseY);
                 
-                HashMap<Integer, String> data = new HashMap();
-                if(indexClient==currentPlayer)  
-                    data.put(1, "yes");
-                else
-                    data.put(1, "no");
+                HashMap<Integer, String> data = new HashMap();                
                 data.put(2, Integer.toString(indexClient));
                 data.put(3, Integer.toString(mouseX));
                 data.put(4, Integer.toString(mouseY));                            

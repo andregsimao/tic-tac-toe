@@ -252,14 +252,26 @@ public class TicTacToe extends JFrame {
                 statusBar.setForeground(Color.BLACK);                
                 if (currentPlayer == Seed.CROSS) {
                     if(mySymbol=='X')
-                        statusBar.setText("Your turn         (X's Turn)");                    
+                    {
+                        setTitle("Player X");
+                        statusBar.setText("Your turn         ");
+                    }                    
                     else
-                        statusBar.setText("Opponent's turn   (X's Turn)");                    
+                    {
+                        setTitle("Player O");
+                        statusBar.setText("Opponent's turn   ");
+                    }                    
                 } else {
                     if(mySymbol=='X')
-                        statusBar.setText("Opponent's turn   (O's Turn)");                    
+                    {
+                        setTitle("Player X");
+                        statusBar.setText("Opponent's turn   ");
+                    }                    
                     else
-                        statusBar.setText("Your turn         (O's Turn)");  
+                    {
+                        setTitle("Player O");
+                        statusBar.setText("Your turn         ");
+                    }  
                 }
             } else {                                  
                 if (currentState == GameState.DRAW) {
