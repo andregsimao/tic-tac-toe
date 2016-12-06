@@ -61,7 +61,7 @@ public class Server
     void sendData(int indexClient,  HashMap<Integer, String> data ) throws Exception
     {
         print("-------------------------");
-        print( "Sending data" );
+        print( "Sending data to client "+indexClient );
         for (Map.Entry<Integer,String> entry : data.entrySet()) {
             int key = entry.getKey();
             String value = entry.getValue();            
@@ -105,30 +105,32 @@ public class Server
             }
         }.start();        
     }
-    public void readData(int indexClient) throws Exception{        
-        print("--------------------------------------------------");
-        print( "Reading data:" );
+    public void readData(int indexClient) throws Exception{             
         Byte messageByte; 
+        print( "Waiting data from client " +indexClient);
         messageByte = input[indexClient].readByte();
+        print("--------------------------------------------------");
+        print( "Reading data from client " +indexClient);
         switch(messageByte){
             case -1: //mensagem de desconexao  
-                String aux=input[indexClient].readUTF();
-                //print(aux);
+                String aux=input[indexClient].readUTF();               
                 print(messageByte+": "+aux);
                 closeConnection(indexClient);
                 return;
             case 0: //trocou de jogador
                 String otherPlayerSt=input[indexClient].readUTF();
-                //print("Trocou para jogador "+otherPlayerSt);
                 if(currentPlayer==1)
                     currentPlayer= 0 ;
                 else 
-                    currentPlayer=1;                
-                print(messageByte+": "+otherPlayerSt);
+                    currentPlayer=1;     
+                print(messageByte+": changing turn sign");                
+                print( "Data readed" );        
+                print("--------------------------------------------------");
                 readDataThread(indexClient);
                 break;
             case 3: //pergunta se é o jogador da vez         
                 int mouseX = Integer.parseInt(input[indexClient].readUTF());
+                print("ask (x,y) received from player "+indexClient);
                 print(messageByte+": "+mouseX);
                 
                 messageByte = input[indexClient].readByte();
@@ -144,12 +146,12 @@ public class Server
                     sendData(0,data);
                     sendData(1,data);
                 }                  
+                print( "Data readed" );        
+                print("--------------------------------------------------");
                 readDataThread(indexClient);
                 break;            
             default:
                 print(" "+messageByte);
         }
-        print( "Data readed" );        
-        print("--------------------------------------------------");
     }
 }

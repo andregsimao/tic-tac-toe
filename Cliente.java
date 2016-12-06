@@ -53,19 +53,21 @@ public class Cliente {
         }.start();        
     }
     void readData() throws Exception{
-        print("-------------------------");
-        print( "Reading data" );
+        print("waiting data from server");
         Byte messageByte; 
         messageByte = input.readByte();
+        print("--------------------------------------------------");
+        print( "Reading data" );
         switch(messageByte){
             case -1: //mensagem de conexao                  
                 String numberString=input.readUTF();
                 clientId=Integer.parseInt(numberString);
                 ticTacToe.mySymbol= (clientId==0) ? 'O' : 'X';
-                print(messageByte+": "+numberString);                
+                print(messageByte+": connected as client "+numberString);                
                 break;
             case 2: //resposta afirmativa da pergunta se é o jogador da vez 
                 int clientId=Integer.parseInt(input.readUTF());
+                print("move confirmation received as (sourceClient, x, y ):");
                 print(messageByte+": "+clientId);
                 
                 messageByte = input.readByte();
@@ -78,10 +80,10 @@ public class Cliente {
                 
                 ticTacToe.processClick(clientId,mouseX, mouseY);           
                 break;
-        }
-        readData();
+        }        
         print( "Data readed" );        
-        print("-------------------------");
+        print("--------------------------------------------------");
+        readData();
     }
     void sendData( HashMap<Integer, String> data ) throws Exception
     {
@@ -100,7 +102,7 @@ public class Cliente {
     }
     
     void print(Object message){
-        System.out.println("<<CLIENTE "+clientId+">> "+message);
+        System.out.println("<<CLIENT "+clientId+">> "+message);
     }
     void closeConnection() 
     {

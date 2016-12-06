@@ -140,9 +140,8 @@ public class TicTacToe extends JFrame {
                 if(clienteOrigem==client.clientId)
                 {
                     // Switch player                    
-                    HashMap<Integer, String> data=new HashMap();
-                    int otherPlayer = (client.clientId ==1) ? 0 : 1;
-                    data.put(0, Integer.toString(otherPlayer));
+                    HashMap<Integer, String> data=new HashMap();                                        
+                    data.put(0, "Final turn message (changing player)");
                     try{
                         client.sendData(data);
                     }
